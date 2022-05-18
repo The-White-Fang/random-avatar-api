@@ -129,11 +129,11 @@ server.get('/random', async (req, res) => {
 			images: string[] = [];
 
 		imgTags.each((i, el) => {
-			el.name === 'img' && images.push(el.attribs['src']);
+			el.name === 'img' && !el.attribs['src']?.endsWith('gif') && images.push(el.attribs['src']);
 		});
 
 		res.json({
-			image: images[imgNum],
+			image: images[imgNum - (images.length - 30)],
 		});
 	} catch (error) {
 		if (!(error instanceof Error)) {
