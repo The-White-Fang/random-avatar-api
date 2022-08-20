@@ -164,7 +164,7 @@ server.get('/random/:query', async (req, res) => {
 	const imgNum = random % 30;
 
 	const spaceEscaped = query.replace(/\s/g, '+');
-	const params = `?search=${spaceEscaped}&quickload=1	&page=${page}`;
+	const params = `?search=${spaceEscaped}&quickload=1&page=${page}`;
 
 	const cachedUrl = cache.get(spaceEscaped);
 	const url = (cachedUrl || `https://avatars.alphacoders.com/searches/view`) + params;
