@@ -132,8 +132,10 @@ server.get('/random', async (req, res) => {
 			el.name === 'img' && !el.attribs['src']?.endsWith('gif') && images.push(el.attribs['src']);
 		});
 
+		const img = images[imgNum - (images.length - 30)] ?? images[0];
+
 		res.json({
-			image: images[imgNum - (images.length - 30)],
+			image: img,
 		});
 	} catch (error) {
 		if (!(error instanceof Error)) {
