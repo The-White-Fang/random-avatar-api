@@ -3,6 +3,7 @@ import express from 'express';
 import Jimp from 'jimp';
 import NodeCache from 'node-cache';
 import request from 'request';
+import { getRandom } from './helpers/random';
 import logging from './logging';
 
 const server = express();
@@ -104,39 +105,16 @@ server.post('/crop', async (req, res) => {
 });
 
 server.get('/random', async (req, res) => {
-	const random = Math.ceil(Math.random() * 2000);
-	const page = Math.ceil(random / 30);
-	const imgNum = random % 30;
-
-	const url = `https://avatars.alphacoders.com/avatars/popular?page=${page}&quickload=1`;
-
 	try {
-		const body: string = await new Promise((resolve, reject) =>
-			request(url, (error, response, body) => {
-				if (error) {
-					return reject(error);
-				} else if (response.statusCode > 399) {
-					return reject(new Error(`Request failed with status code ${response.statusCode}`));
-				}
+		while (1) {
+			const image = await getRandom();
 
-				resolve(body);
-			})
-		);
-
-		const $ = cheerio.load(body);
-
-		const imgTags = $('.img-responsive'),
-			images: string[] = [];
-
-		imgTags.each((i, el) => {
-			el.name === 'img' && !el.attribs['src']?.endsWith('gif') && images.push(el.attribs['src']);
-		});
-
-		const img = images[imgNum - (images.length - 30)] ?? images[0];
-
-		res.json({
-			image: img,
-		});
+			if (image) {
+				return res.json({
+					image,
+				});
+			}
+		}
 	} catch (error) {
 		if (!(error instanceof Error)) {
 			throw new Error('SHOULD NEVER HAPPEN');
